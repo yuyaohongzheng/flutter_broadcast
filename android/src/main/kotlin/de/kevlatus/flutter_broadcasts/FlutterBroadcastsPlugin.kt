@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.Build
 import android.util.Log
 import androidx.annotation.NonNull
 import io.flutter.embedding.engine.plugins.FlutterPlugin
@@ -46,7 +47,15 @@ class CustomBroadcastReceiver(
     }
 
     fun start(context: Context) {
-        context.registerReceiver(this, intentFilter)
+        Log.d(TAG, "starting to register for broadcasts: " + names.joinToString(";"))
+        //在Android14中。必须增加第三个参数RECEIVER_EXPORTED
+        if (Build.VERSION.SDK_INT >= 34) {
+            Log.d(TAG,"android 14 以上");
+            context.registerReceiver(this, intentFilter,Context.RECEIVER_EXPORTED)
+        } else {
+            Log.d(TAG,"android 14以下");
+            context.registerReceiver(this, intentFilter)
+        }
         Log.d(TAG, "starting to listen for broadcasts: " + names.joinToString(";"))
     }
 
